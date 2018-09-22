@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="league_schedule_list_srl" type="id" />
+    <item name="league_schedule_list_rv" type="id" />
+    <item name="league_list_pb" type="id" />
+    <item name="league_name_tv" type="id" />
+    <item name="league_list_srl" type="id" />
+    <item name="league_list_rv" type="id" />
+    <item name="league_schedule_list_pb" type="id" />
+</resources>

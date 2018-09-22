@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">FootballMatchSchedule</string>
+
+    <string name="versus_label">vs</string>
+
+    <!-- DUMMY CONTENT -->
+    <string name="date">Sen, 20 Maret 1994</string>
+    <string name="homeTeam">Arsenal</string>
+    <string name="homeScore">2</string>
+    <string name="awayTeam">Liverpool</string>
+    <string name="awayScore">1</string>
+
+    <!-- INTENT PARAM -->
+    <string name="id_league_intent_param">id_league</string>
+    <string name="name_league_intent_param">name_league</string>
+</resources>
