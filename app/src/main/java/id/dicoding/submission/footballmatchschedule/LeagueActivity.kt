@@ -2,6 +2,7 @@ package id.dicoding.submission.footballmatchschedule
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -19,7 +20,7 @@ import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.onRefresh
 import org.jetbrains.anko.support.v4.swipeRefreshLayout
 
-class LeagueActivity : AppCompatActivity(), LeagueView {
+class LeagueActivity() : AppCompatActivity(), LeagueView {
     private lateinit var mLeaguesListRv : RecyclerView
 
     private lateinit var mProgressBar : ProgressBar
@@ -88,38 +89,30 @@ class LeagueActivity : AppCompatActivity(), LeagueView {
 
 class LeaguesActivityUI : AnkoComponent<LeagueActivity> {
     override fun createView(ui: AnkoContext<LeagueActivity>) = with(ui) {
-        linearLayout {
-            lparams(width = matchParent, height = wrapContent)
-            orientation = LinearLayout.VERTICAL
+        swipeRefreshLayout {
+            id = R.id.league_list_srl
+            setColorSchemeResources(
+                    colorAccent,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light
+            )
 
-            swipeRefreshLayout {
-                id = R.id.league_list_srl
-                setColorSchemeResources(
-                        colorAccent,
-                        android.R.color.holo_green_light,
-                        android.R.color.holo_orange_light,
-                        android.R.color.holo_red_light
-                )
+            relativeLayout {
+                lparams(width = matchParent, height = wrapContent)
 
-                relativeLayout {
+                recyclerView {
+                    id = R.id.league_list_rv
                     lparams(width = matchParent, height = wrapContent)
-
-                    recyclerView {
-                        id = R.id.league_list_rv
-                        lparams(width = matchParent, height = wrapContent)
-                        layoutManager = LinearLayoutManager(ctx)
-                    }
-
-                    progressBar{
-                        id = R.id.league_list_pb
-                    }.lparams{
-                        centerHorizontally()
-                        topMargin = dip(16)
-                    }
+                    layoutManager = LinearLayoutManager(ctx)
                 }
-            }.lparams(width = matchParent, height = wrapContent) {
-                leftPadding = dip(16)
-                rightPadding = dip(16)
+
+                progressBar{
+                    id = R.id.league_list_pb
+                }.lparams{
+                    centerHorizontally()
+                    topMargin = dip(16)
+                }
             }
         }
     }

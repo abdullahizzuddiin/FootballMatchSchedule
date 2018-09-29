@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     android:layout_marginTop="8dp"
+    android:background="@android:color/white"
     android:padding="16dp">
 
     <TextView
@@ -38,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/versus_label"
         app:layout_constraintEnd_toStartOf="@+id/versus_label"
         app:layout_constraintTop_toTopOf="@+id/versus_label"
-        tools:text="@string/homeScore"
+        tools:text="@string/home_score"
         tools:textColor="@color/greenWinTeamColor" />
 
     <TextView
@@ -52,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/versus_label"
         app:layout_constraintStart_toEndOf="@+id/versus_label"
         app:layout_constraintTop_toTopOf="@+id/versus_label"
-        tools:text="@string/awayScore"
+        tools:text="@string/away_score"
         tools:textColor="@color/redLoseTeamColor" />
 
     <TextView
@@ -66,7 +67,7 @@
         app:layout_constraintEnd_toStartOf="@+id/match_home_score_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/match_home_score_tv"
-        tools:text="@string/homeTeam" />
+        tools:text="@string/home_team" />
 
     <TextView
         android:id="@+id/match_away_team_tv"
@@ -81,5 +82,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/match_away_score_tv"
         app:layout_constraintTop_toTopOf="@+id/match_away_score_tv"
-        tools:text="@string/awayTeam" />
+        tools:text="@string/away_team" />
 </android.support.constraint.ConstraintLayout>

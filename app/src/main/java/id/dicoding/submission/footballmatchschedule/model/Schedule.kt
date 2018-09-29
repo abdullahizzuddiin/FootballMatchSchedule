@@ -1,7 +1,10 @@
 package id.dicoding.submission.footballmatchschedule.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Schedule(
         @SerializedName("idEvent")
         var idEvent : String? = null,
@@ -87,4 +90,4 @@ data class Schedule(
         @SerializedName("intAwayShots")
         var awayShots : Int? = null
 
-)
+) : Parcelable

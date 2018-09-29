@@ -1,47 +1,30 @@
 package id.dicoding.submission.footballmatchschedule
 
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import id.dicoding.submission.footballmatchschedule.R.color.colorAccent
-import id.dicoding.submission.footballmatchschedule.adapter.LeagueSchedulesListAdapter
-import id.dicoding.submission.footballmatchschedule.model.League
-import id.dicoding.submission.footballmatchschedule.model.Schedule
-import id.dicoding.submission.footballmatchschedule.presenter.MatchPresenter
-import id.dicoding.submission.footballmatchschedule.utility.setInvisible
-import id.dicoding.submission.footballmatchschedule.utility.setVisible
-import id.dicoding.submission.footballmatchschedule.view_operation.MatchView
-import org.jetbrains.anko.*
-import org.jetbrains.anko.recyclerview.v7.recyclerView
-import org.jetbrains.anko.support.v4.onRefresh
-import org.jetbrains.anko.support.v4.swipeRefreshLayout
+import android.support.v7.widget.Toolbar
+import id.dicoding.submission.footballmatchschedule.adapter.LeagueScheduleViewPager
+import org.jetbrains.anko.find
 
-class LeagueScheduleActivity : AppCompatActivity(), MatchView {
-    private lateinit var mLeagueScheduleListRv : RecyclerView
+class LeagueScheduleActivity : AppCompatActivity(){
 
-    private lateinit var mProgressBar : ProgressBar
+    private lateinit var toolbar: Toolbar
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager
 
-    private lateinit var mSwipeRefreshLayout : SwipeRefreshLayout
-    private var mSchedules : MutableList<Schedule> = mutableListOf()
-    private lateinit var mAdapter : LeagueSchedulesListAdapter
-
-    private lateinit var mPresenter : MatchPresenter
+    private lateinit var prevMatchLeagueScheduleFragment : LeagueScheduleFragment
+    private lateinit var nextMatchLeagueScheduleFragment : LeagueScheduleFragment
 
     private lateinit var mIdLeague : String
     private lateinit var mNameLeague : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LeagueScheduleActivityUI().setContentView(this)
+        setContentView(R.layout.activity_league_schedule)
         receiveExtras()
         initView()
-        initPresenter()
-        initAdapter()
-        setRefreshListener()
     }
 
     private fun receiveExtras() {
@@ -51,87 +34,37 @@ class LeagueScheduleActivity : AppCompatActivity(), MatchView {
     }
 
     private fun initView() {
-        mLeagueScheduleListRv = find(R.id.league_schedule_list_rv)
-        mProgressBar = find(R.id.league_schedule_list_pb)
-        mSwipeRefreshLayout = find(R.id.league_schedule_list_srl)
+        toolbar = find(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        title = "Jadwal $mNameLeague"
+
+        viewPager = find(R.id.viewpager)
+        setupViewPager(viewPager)
+
+        tabLayout = find(R.id.tabs)
+        tabLayout.setupWithViewPager(viewPager)
     }
 
-    private fun initPresenter() {
-        mPresenter = MatchPresenter(this)
-        mPresenter.getMatchList(mIdLeague)
+    private fun setupViewPager(viewPager: ViewPager) {
+        val adapter = LeagueScheduleViewPager(supportFragmentManager)
+
+        val prevMatchExtras = Bundle()
+        prevMatchExtras.putInt(resources.getString(R.string.schedule_type_intent_param), 0)
+        prevMatchExtras.putString(resources.getString(R.string.id_league_intent_param), mIdLeague)
+
+        prevMatchLeagueScheduleFragment = LeagueScheduleFragment()
+        prevMatchLeagueScheduleFragment.arguments = prevMatchExtras
+
+        val nextMatchExtras = Bundle()
+        nextMatchExtras.putInt(resources.getString(R.string.schedule_type_intent_param), 1)
+        nextMatchExtras.putString(resources.getString(R.string.id_league_intent_param), mIdLeague)
+
+        nextMatchLeagueScheduleFragment = LeagueScheduleFragment()
+        nextMatchLeagueScheduleFragment.arguments = nextMatchExtras
+
+        adapter.addFragment(prevMatchLeagueScheduleFragment, "Prev. Match")
+        adapter.addFragment(nextMatchLeagueScheduleFragment, "Next Match")
+        viewPager.offscreenPageLimit = 2
+        viewPager.adapter = adapter
     }
-
-    override fun showLoading() {
-        mProgressBar.setVisible()
-        mLeagueScheduleListRv.setInvisible()
-    }
-
-
-    private fun initAdapter() {
-        mAdapter = LeagueSchedulesListAdapter(this, mSchedules, ::onScheduleClickListener)
-        mLeagueScheduleListRv.adapter = mAdapter
-    }
-
-    private fun setRefreshListener() {
-        mSwipeRefreshLayout.onRefresh {
-            showLoading()
-            mPresenter.getMatchList(mIdLeague)
-        }
-    }
-
-    private fun onScheduleClickListener(schedule: Schedule) {
-
-    }
-
-    override fun hideLoading() {
-        mProgressBar.setInvisible()
-        mLeagueScheduleListRv.setVisible()
-    }
-
-    override fun showLeagueList(filteredData: List<Schedule>) {
-        mSwipeRefreshLayout.isRefreshing = false
-        mSchedules.clear()
-        mSchedules.addAll(filteredData)
-        mAdapter.notifyDataSetChanged()
-    }
-}
-
-class LeagueScheduleActivityUI : AnkoComponent<LeagueScheduleActivity> {
-    override fun createView(ui: AnkoContext<LeagueScheduleActivity>) = with(ui) {
-        linearLayout {
-            lparams(width = matchParent, height = wrapContent)
-            orientation = LinearLayout.VERTICAL
-
-            swipeRefreshLayout {
-                id = R.id.league_schedule_list_srl
-                setColorSchemeResources(
-                        colorAccent,
-                        android.R.color.holo_green_light,
-                        android.R.color.holo_orange_light,
-                        android.R.color.holo_red_light
-                )
-
-                relativeLayout {
-                    lparams(width = matchParent, height = wrapContent)
-
-                    recyclerView {
-                        id = R.id.league_schedule_list_rv
-                        lparams(width = matchParent, height = wrapContent)
-                        layoutManager = LinearLayoutManager(ctx)
-                    }
-
-                    progressBar{
-                        id = R.id.league_schedule_list_pb
-                    }.lparams{
-                        centerHorizontally()
-                        topMargin = dip(16)
-                    }
-                }
-            }.lparams(width = matchParent, height = wrapContent) {
-                leftPadding = dip(16)
-                rightPadding = dip(16)
-            }
-        }
-    }
-
 }

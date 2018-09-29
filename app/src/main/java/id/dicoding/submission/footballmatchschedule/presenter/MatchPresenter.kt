@@ -12,15 +12,15 @@ class MatchPresenter(private val mMatchView: MatchView) {
     private val gson = Gson()
     private val request = ApiRepository()
 
-    fun getMatchList(idLeague : String) {
+    fun getMatchList(idLeague : String, type: Int) {
         mMatchView.showLoading()
         doAsync {
-            val data = gson.fromJson(request.doRequest(TheSportDBApi.getNextMatchesByLeagueId(idLeague)), SchedulesResponse::class.java)
-            val filteredData = data.events
+            val url = if(type == 0) TheSportDBApi.getPrevMatchesByLeagueId(idLeague) else TheSportDBApi.getNextMatchesByLeagueId(idLeague)
+            val data = gson.fromJson(request.doRequest(url), SchedulesResponse::class.java)
 
             uiThread {
                 mMatchView.hideLoading()
-                mMatchView.showLeagueList(filteredData)
+                mMatchView.showLeagueList(data.events)
             }
         }
     }
