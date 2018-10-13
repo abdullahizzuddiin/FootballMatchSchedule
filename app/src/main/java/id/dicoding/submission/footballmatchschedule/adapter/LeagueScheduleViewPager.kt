@@ -3,9 +3,9 @@ package id.dicoding.submission.footballmatchschedule.adapter
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import java.util.ArrayList
+import java.util.*
 
-class LeagueScheduleViewPager(fm : FragmentManager) : FragmentPagerAdapter(fm) {
+class LeagueScheduleViewPager(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     private val mFragmentList = ArrayList<Fragment>()
     private val mFragmentTitleList = ArrayList<String>()
 

@@ -8,17 +8,18 @@ import android.support.v7.widget.Toolbar
 import id.dicoding.submission.footballmatchschedule.adapter.LeagueScheduleViewPager
 import org.jetbrains.anko.find
 
-class LeagueScheduleActivity : AppCompatActivity(){
+class LeagueScheduleActivity : AppCompatActivity() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
 
-    private lateinit var prevMatchLeagueScheduleFragment : LeagueScheduleFragment
-    private lateinit var nextMatchLeagueScheduleFragment : LeagueScheduleFragment
+    private lateinit var prevMatchMatchesFragment: MatchesFragment
+    private lateinit var nextMatchMatchesFragment: MatchesFragment
+    private lateinit var favoriteMatchMatchesFragment: FavoriteMatchesFragment
 
-    private lateinit var mIdLeague : String
-    private lateinit var mNameLeague : String
+    private lateinit var mIdLeague: String
+    private lateinit var mNameLeague: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,23 +49,44 @@ class LeagueScheduleActivity : AppCompatActivity(){
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = LeagueScheduleViewPager(supportFragmentManager)
 
+        adapter.addFragment(initPrevMatchFragment(), resources.getString(R.string.previous_match_label))
+        adapter.addFragment(initNextMatchFragment(), resources.getString(R.string.next_match_label))
+        adapter.addFragment(initFavoriteMatchFragment(), resources.getString(R.string.favorite_match_label))
+        viewPager.offscreenPageLimit = 3
+        viewPager.adapter = adapter
+    }
+
+    private fun initPrevMatchFragment(): MatchesFragment {
         val prevMatchExtras = Bundle()
-        prevMatchExtras.putInt(resources.getString(R.string.schedule_type_intent_param), 0)
+        prevMatchExtras.putString(resources.getString(R.string.match_type_intent_param),
+                resources.getString(R.string.match_type_prev_match_intent_param))
         prevMatchExtras.putString(resources.getString(R.string.id_league_intent_param), mIdLeague)
 
-        prevMatchLeagueScheduleFragment = LeagueScheduleFragment()
-        prevMatchLeagueScheduleFragment.arguments = prevMatchExtras
+        prevMatchMatchesFragment = MatchesFragment()
+        prevMatchMatchesFragment.arguments = prevMatchExtras
 
+        return prevMatchMatchesFragment
+    }
+
+    private fun initNextMatchFragment(): MatchesFragment {
         val nextMatchExtras = Bundle()
-        nextMatchExtras.putInt(resources.getString(R.string.schedule_type_intent_param), 1)
+        nextMatchExtras.putString(resources.getString(R.string.match_type_intent_param),
+                resources.getString(R.string.match_type_next_match_intent_param))
         nextMatchExtras.putString(resources.getString(R.string.id_league_intent_param), mIdLeague)
 
-        nextMatchLeagueScheduleFragment = LeagueScheduleFragment()
-        nextMatchLeagueScheduleFragment.arguments = nextMatchExtras
+        nextMatchMatchesFragment = MatchesFragment()
+        nextMatchMatchesFragment.arguments = nextMatchExtras
 
-        adapter.addFragment(prevMatchLeagueScheduleFragment, "Prev. Match")
-        adapter.addFragment(nextMatchLeagueScheduleFragment, "Next Match")
-        viewPager.offscreenPageLimit = 2
-        viewPager.adapter = adapter
+        return nextMatchMatchesFragment
+    }
+
+    private fun initFavoriteMatchFragment(): FavoriteMatchesFragment {
+        val favoriteMatchExtras = Bundle()
+        favoriteMatchExtras.putString(resources.getString(R.string.id_league_intent_param), mIdLeague)
+
+        favoriteMatchMatchesFragment = FavoriteMatchesFragment()
+        favoriteMatchMatchesFragment.arguments = favoriteMatchExtras
+
+        return favoriteMatchMatchesFragment
     }
 }

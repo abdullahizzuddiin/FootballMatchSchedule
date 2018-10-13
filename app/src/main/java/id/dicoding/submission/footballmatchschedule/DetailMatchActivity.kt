@@ -1,76 +1,190 @@
 package id.dicoding.submission.footballmatchschedule
 
-import android.support.v7.app.AppCompatActivity
+import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
-import com.squareup.picasso.Picasso
-import id.dicoding.submission.footballmatchschedule.model.Schedule
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import id.dicoding.submission.footballmatchschedule.db.database
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.AWAY_TEAM_NAME
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.AWAY_TEAM_SCORE
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.HOME_TEAM_NAME
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.HOME_TEAM_SCORE
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.LEAGUE_ID
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.MATCH_DATE
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.MATCH_ID
+import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.TABLE_FAVORITE_MATCH
+import id.dicoding.submission.footballmatchschedule.model.Match
 import id.dicoding.submission.footballmatchschedule.presenter.DetailMatchPresenter
+import id.dicoding.submission.footballmatchschedule.utility.load
 import id.dicoding.submission.footballmatchschedule.utility.parseToIndonesianDate
+import id.dicoding.submission.footballmatchschedule.utility.setInvisible
+import id.dicoding.submission.footballmatchschedule.utility.setVisible
 import id.dicoding.submission.footballmatchschedule.view_operation.DetailMatchView
 import kotlinx.android.synthetic.main.activity_detail_match.*
+import org.jetbrains.anko.db.delete
+import org.jetbrains.anko.db.insert
+import org.jetbrains.anko.design.snackbar
 
 class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
-    private lateinit var mSchedule : Schedule
+    private var menuItem: Menu? = null
 
-    private lateinit var mPresenter : DetailMatchPresenter
+    private var isFavorite: Boolean = false
+
+    private lateinit var mMatch: Match
+
+    private lateinit var mIdMatch: String
+
+    private lateinit var mPresenter: DetailMatchPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_match)
         receiveExtras()
-        initView()
         initPresenter()
-        requestTeamLogo()
     }
 
-    private fun requestTeamLogo() {
-        mSchedule.idHomeTeam.let {
-            mPresenter.getDetailTeam(mSchedule.idHomeTeam!!, true)
+    private fun requestTeamLogo(match: Match) {
+        match.idHomeTeam?.let {
+            mPresenter.getDetailTeamLogo(it, true)
         }
-        mSchedule.idAwayTeam.let {
-            mPresenter.getDetailTeam(mSchedule.idAwayTeam!!, false)
+        match.idAwayTeam?.let {
+            mPresenter.getDetailTeamLogo(it, false)
         }
     }
 
     private fun initPresenter() {
         mPresenter = DetailMatchPresenter(this)
+        mPresenter.getDetailMatch(mIdMatch)
     }
 
     private fun receiveExtras() {
         val bundle = intent.extras
-        mSchedule = bundle?.getParcelable(resources.getString(R.string.schedule_intent_param)) as Schedule
-    }
-
-    private fun initView() {
-        detail_date_tv.text = mSchedule.date?.parseToIndonesianDate()
-        detail_home_team_name_tv.text = mSchedule.homeTeam
-        detail_home_score_tv.text = mSchedule.homeScore?.toString()
-        detail_home_shot_tv.text = mSchedule.homeShots?.toString()
-        detail_home_goal_tv.text = mSchedule.homeGoalDetails
-        detail_home_formation_tv.text = mSchedule.homeFormation
-        detail_goalkeeper_home_name_tv.text = mSchedule.homeLineupGoalkeeper
-        detail_defense_home_name_tv.text = mSchedule.homeLineupDefense
-        detail_midfielder_home_name_tv.text = mSchedule.homeLineupMidfield
-        detail_forward_home_name_tv.text = mSchedule.homeLineupForward
-        detail_substitute_home_name_tv.text = mSchedule.homeLineupSubstitutes
-
-        detail_away_team_name_tv.text = mSchedule.awayTeam
-        detail_away_score_tv.text = mSchedule.awayScore?.toString()
-        detail_away_shot_tv.text = mSchedule.awayShots?.toString()
-        detail_away_goal_tv.text = mSchedule.awayGoalDetails
-        detail_away_formation_tv.text = mSchedule.awayFormation
-        detail_goalkeeper_away_name_tv.text = mSchedule.awayLineupGoalkeeper
-        detail_defense_away_name_tv.text = mSchedule.awayLineupDefense
-        detail_midfielder_away_name_tv.text = mSchedule.awayLineupMidfield
-        detail_forward_away_name_tv.text = mSchedule.awayLineupForward
-        detail_substitute_away_name_tv.text = mSchedule.awayLineupSubstitutes
-
+        mIdMatch = bundle?.getString(resources.getString(R.string.id_match_intent_param)) ?: ""
+        isFavorite = bundle?.getBoolean(resources.getString(R.string.is_favorite_intent_param)) ?: false
     }
 
     override fun showHomeTeamLogo(url: String?) {
-        Picasso.get().load(url).into(detail_home_team_logo_iv)
+        detail_home_team_logo_iv.load(url)
     }
 
     override fun showAwayTeamLogo(url: String?) {
-        Picasso.get().load(url).into(detail_away_team_logo_iv)
+        detail_away_team_logo_iv.load(url)
+    }
+
+    override fun showLoading() {
+        container.setInvisible()
+        detail_pb.setVisible()
+    }
+
+    override fun hideLoading() {
+        container.setVisible()
+        detail_pb.setInvisible()
+    }
+
+    override fun updateMatch(data: Match) {
+        showDetailMatch(data)
+        requestTeamLogo(data)
+        mMatch = data.copy()
+    }
+
+    private fun showDetailMatch(match: Match) {
+        detail_date_tv.text = match.date?.parseToIndonesianDate()
+        detail_home_team_name_tv.text = match.homeTeam
+        detail_home_score_tv.text = match.homeScore?.toString()
+        detail_home_shot_tv.text = match.homeShots?.toString()
+        detail_home_goal_tv.text = match.homeGoalDetails
+        detail_home_formation_tv.text = match.homeFormation
+        detail_goalkeeper_home_name_tv.text = match.homeLineupGoalkeeper
+        detail_defense_home_name_tv.text = match.homeLineupDefense
+        detail_midfielder_home_name_tv.text = match.homeLineupMidfield
+        detail_forward_home_name_tv.text = match.homeLineupForward
+        detail_substitute_home_name_tv.text = match.homeLineupSubstitutes
+
+        detail_away_team_name_tv.text = match.awayTeam
+        detail_away_score_tv.text = match.awayScore?.toString()
+        detail_away_shot_tv.text = match.awayShots?.toString()
+        detail_away_goal_tv.text = match.awayGoalDetails
+        detail_away_formation_tv.text = match.awayFormation
+        detail_goalkeeper_away_name_tv.text = match.awayLineupGoalkeeper
+        detail_defense_away_name_tv.text = match.awayLineupDefense
+        detail_midfielder_away_name_tv.text = match.awayLineupMidfield
+        detail_forward_away_name_tv.text = match.awayLineupForward
+        detail_substitute_away_name_tv.text = match.awayLineupSubstitutes
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.detail_menu, menu)
+        menuItem = menu
+        updateFavoriteIcon()
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.home -> {
+                finish()
+                true
+            }
+            R.id.add_to_favorite -> {
+                onFavoriteMenuClicked()
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun onFavoriteMenuClicked(): Boolean {
+        if (isFavorite)
+            removeFromFavorite()
+        else
+            addToFavorite()
+
+        toggleFavoriteStatus()
+        updateFavoriteIcon()
+
+        return true
+    }
+
+    private fun toggleFavoriteStatus() {
+        isFavorite = !isFavorite
+    }
+
+    private fun addToFavorite() {
+        try {
+            database.use {
+                insert(TABLE_FAVORITE_MATCH,
+                        MATCH_ID to mMatch.idEvent,
+                        LEAGUE_ID to mMatch.idLeague,
+                        HOME_TEAM_NAME to mMatch.homeTeam,
+                        AWAY_TEAM_NAME to mMatch.awayTeam,
+                        HOME_TEAM_SCORE to mMatch.homeScore,
+                        AWAY_TEAM_SCORE to mMatch.awayScore,
+                        MATCH_DATE to mMatch.date)
+            }
+            scroll.snackbar(resources.getString(R.string.added_to_favorite)).show()
+        } catch (e: SQLiteConstraintException) {
+            scroll.snackbar(e.localizedMessage).show()
+        }
+    }
+
+    private fun removeFromFavorite() {
+        try {
+            mMatch.idEvent?.let {
+                database.use {
+                    delete(
+                            TABLE_FAVORITE_MATCH,
+                            "(MATCH_ID = {id})",
+                            "id" to it)
+                }
+                scroll.snackbar(resources.getString(R.string.remove_from_favorite)).show()
+            }
+        } catch (e: SQLiteConstraintException) {
+            scroll.snackbar(e.localizedMessage).show()
+        }
+    }
+
+    private fun updateFavoriteIcon() {
+        val favoriteIcon = if (isFavorite) R.drawable.ic_added_to_favorites else R.drawable.ic_add_to_favorites
+        menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, favoriteIcon)
     }
 }

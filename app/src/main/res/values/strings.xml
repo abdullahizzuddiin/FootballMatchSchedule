@@ -11,6 +11,14 @@
     <string name="midfield_label">Gelandang</string>
     <string name="forward_label">Penyerang</string>
     <string name="substitute_label">Cadangan</string>
+    <string name="previous_match_label">Sebelumnya</string>
+    <string name="next_match_label">Selanjutnya</string>
+    <string name="favorite_match_label">Favorite</string>
+
+    <string name="favorites">Favorites</string>
+
+    <string name="added_to_favorite">Jadwal pertandingan dijadikan favorit</string>
+    <string name="remove_from_favorite">Jadwal pertandingan bukan lagi favorit</string>
 
 
     <!-- CONTENT DESCRIPTION -->
@@ -23,7 +31,7 @@
     <string name="home_score">2</string>
     <string name="away_team">Liverpool</string>
     <string name="away_score">1</string>
-    <string name="formation_strategy">4-3-3</string>
+    <string name="formation_strategy">4–3–3</string>
     <string name="shots">5</string>
     <string name="goals">6</string>
     <string name="single_player">Iker Casillas</string>
@@ -32,6 +40,9 @@
     <!-- INTENT PARAM -->
     <string name="id_league_intent_param">id_league</string>
     <string name="name_league_intent_param">name_league</string>
-    <string name="schedule_intent_param">schedule</string>
-    <string name="schedule_type_intent_param">schedule_type</string>
+    <string name="id_match_intent_param">id_match</string>
+    <string name="is_favorite_intent_param">is_match_favorite</string>
+    <string name="match_type_intent_param">schedule_type</string>
+    <string name="match_type_prev_match_intent_param">previous</string>
+    <string name="match_type_next_match_intent_param">next</string>
 </resources>
