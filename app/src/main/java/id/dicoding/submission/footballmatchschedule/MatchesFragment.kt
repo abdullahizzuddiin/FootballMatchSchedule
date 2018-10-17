@@ -80,7 +80,7 @@ class MatchesFragment : Fragment(), MatchView {
         leagueScheduleFragmentUI.mLeagueScheduleListRv.setVisible()
     }
 
-    override fun showLeagueList(filteredData: List<Match>) {
+    override fun showMatchList(filteredData: List<Match>) {
         leagueScheduleFragmentUI.mSwipeRefreshLayout.isRefreshing = false
         mMatches.clear()
         mMatches.addAll(filteredData)

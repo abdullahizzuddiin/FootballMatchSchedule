@@ -11,6 +11,7 @@ import id.dicoding.submission.footballmatchschedule.R.color.greyBackgroundColor
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.swipeRefreshLayout
+import id.dicoding.submission.footballmatchschedule.R.id.*
 
 class LeagueScheduleFragmentUI : AnkoComponent<Fragment> {
     lateinit var mLeagueScheduleListRv: RecyclerView
@@ -31,6 +32,7 @@ class LeagueScheduleFragmentUI : AnkoComponent<Fragment> {
                 lparams(width = matchParent, height = wrapContent)
 
                 mLeagueScheduleListRv = recyclerView {
+                    id = match_list_rv
                     lparams(width = matchParent, height = wrapContent)
                     layoutManager = LinearLayoutManager(ctx)
                 }

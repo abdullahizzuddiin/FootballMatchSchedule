@@ -7,4 +7,5 @@
     <item name="league_list_srl" type="id" />
     <item name="league_list_rv" type="id" />
     <item name="league_schedule_list_pb" type="id" />
+    <item name="match_list_rv" type="id" />
 </resources>

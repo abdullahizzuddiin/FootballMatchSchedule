@@ -7,6 +7,6 @@ interface MatchView {
 
     fun hideLoading()
 
-    fun showLeagueList(filteredData: List<Match>)
+    fun showMatchList(filteredData: List<Match>)
 
 }

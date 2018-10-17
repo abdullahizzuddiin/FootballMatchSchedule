@@ -21,16 +21,15 @@ class DetailMatchPresenter(
         private val context: CoroutineContextProvider = CoroutineContextProvider()) {
 
     fun getDetailTeamLogo(idTeam: String, isHomeTeam: Boolean) {
-        doAsync {
-            val data = gson.fromJson(request.doRequest(TheSportDBApi.getTeamDetailByTeamId(idTeam)), TeamsResponse::class.java)
 
-            uiThread {
-                if (isHomeTeam) {
-                    mDetailMatchView.showHomeTeamLogo(data.teams[0].logo)
-                } else {
-                    mDetailMatchView.showAwayTeamLogo(data.teams[0].logo)
-                }
+        GlobalScope.async (context.main){
+            val data = bg {
+                gson.fromJson(request.doRequest(TheSportDBApi.getTeamDetailByTeamId(idTeam)), TeamsResponse::class.java)
             }
+
+            val logo = data.await().teams[0].logo
+
+            if(isHomeTeam) mDetailMatchView.showHomeTeamLogo(logo) else mDetailMatchView.showAwayTeamLogo(logo)
         }
     }
 
