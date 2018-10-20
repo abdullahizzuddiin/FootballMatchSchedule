@@ -2,6 +2,8 @@ package id.dicoding.submission.footballmatchschedule
 
 import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
+import android.support.test.espresso.IdlingResource
+import android.support.test.espresso.idling.CountingIdlingResource
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -17,6 +19,7 @@ import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companio
 import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.TABLE_FAVORITE_MATCH
 import id.dicoding.submission.footballmatchschedule.model.Match
 import id.dicoding.submission.footballmatchschedule.presenter.DetailMatchPresenter
+import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.utility.load
 import id.dicoding.submission.footballmatchschedule.utility.parseToIndonesianDate
 import id.dicoding.submission.footballmatchschedule.utility.setInvisible
@@ -31,6 +34,8 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
     private var menuItem: Menu? = null
 
     private var isFavorite: Boolean = false
+
+    private var isLoading: Boolean = false
 
     private lateinit var mMatch: Match
 
@@ -73,11 +78,13 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
     }
 
     override fun showLoading() {
+        isLoading = true
         container.setInvisible()
         detail_pb.setVisible()
     }
 
     override fun hideLoading() {
+        isLoading = false
         container.setVisible()
         detail_pb.setInvisible()
     }
@@ -134,15 +141,21 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
     }
 
     private fun onFavoriteMenuClicked(): Boolean {
-        if (isFavorite)
-            removeFromFavorite()
-        else
-            addToFavorite()
+        try {
+            checkLoadingFinished()
 
-        toggleFavoriteStatus()
-        updateFavoriteIcon()
+            if (isFavorite)
+                removeFromFavorite()
+            else
+                addToFavorite()
 
-        return true
+            toggleFavoriteStatus()
+            updateFavoriteIcon()
+        } catch (e: RuntimeException) {
+            scroll.snackbar(e.localizedMessage).show()
+        } finally {
+            return true
+        }
     }
 
     private fun toggleFavoriteStatus() {
@@ -181,6 +194,12 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
         } catch (e: SQLiteConstraintException) {
             scroll.snackbar(e.localizedMessage).show()
         }
+    }
+
+    @Throws(RuntimeException::class)
+    private fun checkLoadingFinished() {
+        if (isLoading)
+            throw RuntimeException("Sedang mengambil data. Mohon tunggu sejeank :)")
     }
 
     private fun updateFavoriteIcon() {

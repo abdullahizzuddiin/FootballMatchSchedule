@@ -39,9 +39,9 @@ class LeaguePresenterTest {
 
     @Test
     fun getLeagueList() {
-        val leagues : MutableList<League> = mutableListOf()
+        val leagues : MutableList<League> = mutableListOf(League(id = "1", sportType = "Baseball"), League(id = "2", sportType = "Soccer"))
         val response = LeaguesResponse(leagues)
-        val filteredData = response.leagues.filter { it.sportType.equals("Soccer") }
+        val filteredData = mutableListOf(League("2", sportType = "Soccer"))
 
         `when`(gson.fromJson(apiRepository
                 .doRequest(TheSportDBApi.getLeagues()),

@@ -1,6 +1,5 @@
 package id.dicoding.submission.footballmatchschedule.api
 
-import android.net.Uri
 import id.dicoding.submission.footballmatchschedule.BuildConfig
 
 const val ALL_LEAGUES_URL = "all_leagues.php"

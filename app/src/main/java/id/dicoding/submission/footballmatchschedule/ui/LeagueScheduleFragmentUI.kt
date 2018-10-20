@@ -8,10 +8,10 @@ import android.support.v7.widget.RecyclerView
 import android.widget.ProgressBar
 import id.dicoding.submission.footballmatchschedule.R.color.colorAccent
 import id.dicoding.submission.footballmatchschedule.R.color.greyBackgroundColor
+import id.dicoding.submission.footballmatchschedule.R.id.match_list_rv
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.swipeRefreshLayout
-import id.dicoding.submission.footballmatchschedule.R.id.*
 
 class LeagueScheduleFragmentUI : AnkoComponent<Fragment> {
     lateinit var mLeagueScheduleListRv: RecyclerView

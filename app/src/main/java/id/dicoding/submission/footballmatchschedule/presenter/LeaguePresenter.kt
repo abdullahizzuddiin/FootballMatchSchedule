@@ -1,16 +1,16 @@
 package id.dicoding.submission.footballmatchschedule.presenter
 
+import android.support.test.espresso.idling.CountingIdlingResource
 import com.google.gson.Gson
 import id.dicoding.submission.footballmatchschedule.api.ApiRepository
 import id.dicoding.submission.footballmatchschedule.api.TheSportDBApi
 import id.dicoding.submission.footballmatchschedule.model.LeaguesResponse
+import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.ui.CoroutineContextProvider
 import id.dicoding.submission.footballmatchschedule.view_operation.LeagueView
 import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.coroutines.experimental.bg
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 
 class LeaguePresenter(
         private val mLeagueView: LeagueView,
@@ -19,9 +19,9 @@ class LeaguePresenter(
         private val context: CoroutineContextProvider = CoroutineContextProvider()) {
 
     fun getLeagueList() {
+        GlobalIdlingResources.increment()
         mLeagueView.showLoading()
-
-        GlobalScope.async(context.main) {
+        GlobalScope.launch(context.main) {
             val data = bg {
                 gson.fromJson(request.doRequest(TheSportDBApi.getLeagues()), LeaguesResponse::class.java)
             }
@@ -29,6 +29,7 @@ class LeaguePresenter(
             val filteredData = data.await().leagues.filter { it.sportType.equals("Soccer") }
             mLeagueView.showLeagueList(filteredData)
             mLeagueView.hideLoading()
+            GlobalIdlingResources.decrement()
         }
     }
 }

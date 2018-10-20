@@ -33,7 +33,7 @@ class MatchesListAdapter(
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         init {
             itemView.setOnClickListener {
-                mMatches[adapterPosition].idEvent?.let{
+                mMatches[adapterPosition].idEvent?.let {
                     mListener(it)
                 }
             }
