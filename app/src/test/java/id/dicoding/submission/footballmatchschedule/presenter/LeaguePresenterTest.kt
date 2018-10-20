@@ -6,14 +6,9 @@ import id.dicoding.submission.footballmatchschedule.api.ApiRepository
 import id.dicoding.submission.footballmatchschedule.api.TheSportDBApi
 import id.dicoding.submission.footballmatchschedule.model.League
 import id.dicoding.submission.footballmatchschedule.model.LeaguesResponse
-import id.dicoding.submission.footballmatchschedule.model.Match
-import id.dicoding.submission.footballmatchschedule.model.MatchesResponse
-import id.dicoding.submission.footballmatchschedule.view_operation.DetailMatchView
 import id.dicoding.submission.footballmatchschedule.view_operation.LeagueView
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`

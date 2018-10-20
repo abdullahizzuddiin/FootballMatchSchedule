@@ -2,10 +2,12 @@ package id.dicoding.submission.footballmatchschedule
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.test.espresso.IdlingResource
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import id.dicoding.submission.footballmatchschedule.adapter.LeagueScheduleViewPager
+import id.dicoding.submission.footballmatchschedule.test.ViewPagerIdlingResource
 import org.jetbrains.anko.find
 
 class LeagueScheduleActivity : AppCompatActivity() {
@@ -20,6 +22,7 @@ class LeagueScheduleActivity : AppCompatActivity() {
 
     private lateinit var mIdLeague: String
     private lateinit var mNameLeague: String
+    private lateinit var viewPagerIdlingResource : ViewPagerIdlingResource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,7 @@ class LeagueScheduleActivity : AppCompatActivity() {
 
         viewPager = find(R.id.viewpager)
         setupViewPager(viewPager)
+        viewPagerIdlingResource = ViewPagerIdlingResource(viewPager, "VIEW_PAGER_LOADER")
 
         tabLayout = find(R.id.tabs)
         tabLayout.setupWithViewPager(viewPager)
@@ -88,5 +92,9 @@ class LeagueScheduleActivity : AppCompatActivity() {
         favoriteMatchMatchesFragment.arguments = favoriteMatchExtras
 
         return favoriteMatchMatchesFragment
+    }
+
+    fun getViewPagerIdlingSource() : ViewPagerIdlingResource {
+        return viewPagerIdlingResource
     }
 }

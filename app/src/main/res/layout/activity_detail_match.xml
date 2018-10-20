@@ -198,7 +198,7 @@
                 android:gravity="center_horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/detail_away_goal_tv"
                 app:layout_constraintStart_toEndOf="@+id/barrier_right_midle_label"
-                app:layout_constraintTop_toBottomOf="@+id/detail_home_goal_tv"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_goal_label"
                 tools:text="@string/many_player" />
 
             <android.support.constraint.Barrier

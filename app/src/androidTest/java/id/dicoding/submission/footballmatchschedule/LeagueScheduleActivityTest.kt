@@ -19,7 +19,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import id.dicoding.submission.footballmatchschedule.R.id.*
 import id.dicoding.submission.footballmatchschedule.RecyclerViewItemCountAssertion.Companion.withItemCount
-import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
+import id.dicoding.submission.footballmatchschedule.test.ViewPagerIdlingResource
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Description
@@ -32,7 +32,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class LeagueScheduleActivityTest {
-    private lateinit var mActivity: LeagueScheduleActivity
     private val id_league_intent_param = "id_league"
     private val name_league_intent_param = "name_league"
     private val id_league = "4328"
@@ -42,19 +41,21 @@ class LeagueScheduleActivityTest {
     @JvmField
     var activityRule = IntentsTestRule(LeagueScheduleActivity::class.java, true, false)
 
+    private lateinit var viewPagerIdlingResource : ViewPagerIdlingResource
+
     @Before
     fun setUp() {
         val intent = Intent()
         intent.putExtra(id_league_intent_param, id_league)
         intent.putExtra(name_league_intent_param, name_league)
         activityRule.launchActivity(intent)
-
-        IdlingRegistry.getInstance().register(GlobalIdlingResources.getIdlingResource())
+        viewPagerIdlingResource = activityRule.activity.getViewPagerIdlingSource()
+        IdlingRegistry.getInstance().register(viewPagerIdlingResource)
     }
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(GlobalIdlingResources.getIdlingResource())
+        IdlingRegistry.getInstance().unregister(viewPagerIdlingResource)
     }
 
     @Test
@@ -70,6 +71,7 @@ class LeagueScheduleActivityTest {
         onView(withId(add_to_favorite)).perform(click())
         onView(withText("Jadwal pertandingan dijadikan favorit"))
                 .check(matches(isDisplayed()))
+        onView(withId(add_to_favorite))
 
         pressBack()
         val favoriteRecyclerViewIndex = 2
@@ -84,7 +86,6 @@ class LeagueScheduleActivityTest {
 
         onView(withId(viewpager)).perform(swipeLeft())
         onView(withId(viewpager)).perform(swipeLeft())
-//        Thread.sleep(1000)
         onView(result(withId(match_list_rv), recyclerViewIndex)).check(matches(ViewMatchers.isDisplayed()))
         onView(result(withId(match_list_rv), recyclerViewIndex)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
         onView(result(withId(match_list_rv), recyclerViewIndex)).perform(
