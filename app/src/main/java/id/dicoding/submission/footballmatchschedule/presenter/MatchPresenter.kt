@@ -1,8 +1,6 @@
 package id.dicoding.submission.footballmatchschedule.presenter
 
 import android.content.Context
-import android.support.test.espresso.IdlingResource
-import android.support.test.espresso.idling.CountingIdlingResource
 import com.google.gson.Gson
 import id.dicoding.submission.footballmatchschedule.api.ApiRepository
 import id.dicoding.submission.footballmatchschedule.api.TheSportDBApi
@@ -15,7 +13,6 @@ import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.ui.CoroutineContextProvider
 import id.dicoding.submission.footballmatchschedule.view_operation.MatchView
 import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.db.classParser

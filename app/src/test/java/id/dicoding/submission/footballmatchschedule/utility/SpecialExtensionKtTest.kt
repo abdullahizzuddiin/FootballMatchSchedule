@@ -1,8 +1,7 @@
 package id.dicoding.submission.footballmatchschedule.utility
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class SpecialExtensionKtTest {
 

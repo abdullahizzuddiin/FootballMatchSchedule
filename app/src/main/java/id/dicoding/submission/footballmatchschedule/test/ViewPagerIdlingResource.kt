@@ -6,8 +6,8 @@ import android.support.v4.view.ViewPager
 /**
  * @source: https://stackoverflow.com/questions/31056918/wait-for-view-pager-animations-with-espresso/32763454#32763454
  */
-class ViewPagerIdlingResource(viewPager: ViewPager, private val name : String): IdlingResource {
-    private var isIdle : Boolean = true
+class ViewPagerIdlingResource(viewPager: ViewPager, private val name: String) : IdlingResource {
+    private var isIdle: Boolean = true
     private var mResourceCallback: IdlingResource.ResourceCallback? = null
 
     init {

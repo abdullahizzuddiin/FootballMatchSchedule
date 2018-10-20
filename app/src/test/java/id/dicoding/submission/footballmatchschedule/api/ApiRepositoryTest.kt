@@ -1,8 +1,6 @@
 package id.dicoding.submission.footballmatchschedule.api
 
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 

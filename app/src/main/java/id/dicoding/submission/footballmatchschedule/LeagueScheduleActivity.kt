@@ -2,7 +2,6 @@ package id.dicoding.submission.footballmatchschedule
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.test.espresso.IdlingResource
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -22,7 +21,7 @@ class LeagueScheduleActivity : AppCompatActivity() {
 
     private lateinit var mIdLeague: String
     private lateinit var mNameLeague: String
-    private lateinit var viewPagerIdlingResource : ViewPagerIdlingResource
+    private lateinit var viewPagerIdlingResource: ViewPagerIdlingResource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +93,7 @@ class LeagueScheduleActivity : AppCompatActivity() {
         return favoriteMatchMatchesFragment
     }
 
-    fun getViewPagerIdlingSource() : ViewPagerIdlingResource {
+    fun getViewPagerIdlingSource(): ViewPagerIdlingResource {
         return viewPagerIdlingResource
     }
 }

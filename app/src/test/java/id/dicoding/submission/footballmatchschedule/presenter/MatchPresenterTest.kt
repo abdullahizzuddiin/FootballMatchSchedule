@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations
 
 class MatchPresenterTest {
     @Mock
-    private lateinit var view : MatchView
+    private lateinit var view: MatchView
 
     private lateinit var presenter: MatchPresenter
 
@@ -35,7 +35,7 @@ class MatchPresenterTest {
 
     @Test
     fun getPreviousMatchList() {
-        val match : MutableList<Match> = mutableListOf()
+        val match: MutableList<Match> = mutableListOf()
         val response = MatchesResponse(match)
         val idLeague = "4328"
         val type = "previous"
@@ -54,7 +54,7 @@ class MatchPresenterTest {
 
     @Test
     fun getNextMatchList() {
-        val match : MutableList<Match> = mutableListOf()
+        val match: MutableList<Match> = mutableListOf()
         val response = MatchesResponse(match)
         val idLeague = "4328"
         val type = "next"

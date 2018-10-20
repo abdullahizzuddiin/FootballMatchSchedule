@@ -41,7 +41,7 @@ class LeagueScheduleActivityTest {
     @JvmField
     var activityRule = IntentsTestRule(LeagueScheduleActivity::class.java, true, false)
 
-    private lateinit var viewPagerIdlingResource : ViewPagerIdlingResource
+    private lateinit var viewPagerIdlingResource: ViewPagerIdlingResource
 
     @Before
     fun setUp() {

@@ -1,6 +1,5 @@
 package id.dicoding.submission.footballmatchschedule.presenter
 
-import android.support.test.espresso.idling.CountingIdlingResource
 import com.google.gson.Gson
 import id.dicoding.submission.footballmatchschedule.api.ApiRepository
 import id.dicoding.submission.footballmatchschedule.api.TheSportDBApi

@@ -2,8 +2,6 @@ package id.dicoding.submission.footballmatchschedule
 
 import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
-import android.support.test.espresso.IdlingResource
-import android.support.test.espresso.idling.CountingIdlingResource
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -19,7 +17,6 @@ import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companio
 import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.TABLE_FAVORITE_MATCH
 import id.dicoding.submission.footballmatchschedule.model.Match
 import id.dicoding.submission.footballmatchschedule.presenter.DetailMatchPresenter
-import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.utility.load
 import id.dicoding.submission.footballmatchschedule.utility.parseToIndonesianDate
 import id.dicoding.submission.footballmatchschedule.utility.setInvisible

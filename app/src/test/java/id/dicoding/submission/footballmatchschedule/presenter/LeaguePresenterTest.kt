@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations
 
 class LeaguePresenterTest {
     @Mock
-    private lateinit var view : LeagueView
+    private lateinit var view: LeagueView
 
     private lateinit var presenter: LeaguePresenter
 
@@ -34,7 +34,7 @@ class LeaguePresenterTest {
 
     @Test
     fun getLeagueList() {
-        val leagues : MutableList<League> = mutableListOf(League(id = "1", sportType = "Baseball"), League(id = "2", sportType = "Soccer"))
+        val leagues: MutableList<League> = mutableListOf(League(id = "1", sportType = "Baseball"), League(id = "2", sportType = "Soccer"))
         val response = LeaguesResponse(leagues)
         val filteredData = mutableListOf(League("2", sportType = "Soccer"))
 
