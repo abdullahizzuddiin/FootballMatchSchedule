@@ -70,9 +70,4 @@ class MatchPresenterTest {
         Mockito.verify(view).showMatchList(response.events)
         Mockito.verify(view).hideLoading()
     }
-
-    @After
-    fun tearDown() {
-
-    }
 }

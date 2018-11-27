@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import id.dicoding.submission.footballmatchschedule.adapter.MatchesListAdapter
 import id.dicoding.submission.footballmatchschedule.model.Match
 import id.dicoding.submission.footballmatchschedule.presenter.MatchPresenter
+import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.ui.LeagueScheduleFragmentUI
 import id.dicoding.submission.footballmatchschedule.utility.setInvisible
 import id.dicoding.submission.footballmatchschedule.utility.setVisible
@@ -71,6 +72,7 @@ class MatchesFragment : Fragment(), MatchView {
     }
 
     override fun showLoading() {
+        GlobalIdlingResources.increment()
         leagueScheduleFragmentUI.mProgressBar.setVisible()
         leagueScheduleFragmentUI.mLeagueScheduleListRv.setInvisible()
     }
@@ -78,6 +80,7 @@ class MatchesFragment : Fragment(), MatchView {
     override fun hideLoading() {
         leagueScheduleFragmentUI.mProgressBar.setInvisible()
         leagueScheduleFragmentUI.mLeagueScheduleListRv.setVisible()
+        GlobalIdlingResources.decrement()
     }
 
     override fun showMatchList(filteredData: List<Match>) {

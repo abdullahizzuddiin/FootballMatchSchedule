@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import id.dicoding.submission.footballmatchschedule.api.ApiRepository
 import id.dicoding.submission.footballmatchschedule.api.TheSportDBApi
 import id.dicoding.submission.footballmatchschedule.model.LeaguesResponse
-import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.ui.CoroutineContextProvider
 import id.dicoding.submission.footballmatchschedule.view_operation.LeagueView
 import kotlinx.coroutines.experimental.GlobalScope
@@ -18,7 +17,6 @@ class LeaguePresenter(
         private val context: CoroutineContextProvider = CoroutineContextProvider()) {
 
     fun getLeagueList() {
-        GlobalIdlingResources.increment()
         mLeagueView.showLoading()
         GlobalScope.launch(context.main) {
             val data = bg {
@@ -28,7 +26,6 @@ class LeaguePresenter(
             val filteredData = data.await().leagues.filter { it.sportType.equals("Soccer") }
             mLeagueView.showLeagueList(filteredData)
             mLeagueView.hideLoading()
-            GlobalIdlingResources.decrement()
         }
     }
 }

@@ -9,10 +9,11 @@ import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch
 import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.TABLE_FAVORITE_MATCH
 import id.dicoding.submission.footballmatchschedule.model.Match
 import id.dicoding.submission.footballmatchschedule.model.MatchesResponse
-import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.ui.CoroutineContextProvider
 import id.dicoding.submission.footballmatchschedule.view_operation.MatchView
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.db.classParser
@@ -25,17 +26,15 @@ class MatchPresenter(
         private val context: CoroutineContextProvider = CoroutineContextProvider()) {
 
     fun getMatchList(idLeague: String, type: String) {
-        GlobalIdlingResources.increment()
         mMatchView.showLoading()
         GlobalScope.launch(context.main) {
             val url = getUrlByType(idLeague, type)
-            val data = bg {
+            val data = async(context.io) {
                 gson.fromJson(request.doRequest(url), MatchesResponse::class.java)
             }
 
             mMatchView.showMatchList(data.await().events)
             mMatchView.hideLoading()
-            GlobalIdlingResources.decrement()
         }
     }
 
@@ -48,14 +47,12 @@ class MatchPresenter(
     }
 
     fun getFavoriteMatchList(context: Context, idLeague: String) {
-        GlobalIdlingResources.increment()
         mMatchView.showLoading()
         context.database.use {
             val result = select(TABLE_FAVORITE_MATCH).whereArgs("(LEAGUE_ID = {idLeague})", "idLeague" to idLeague)
             val favorites = result.parseList(classParser<FavoriteMatch>())
             mMatchView.hideLoading()
             mMatchView.showMatchList(Match.mapToMatches(favorites))
-            GlobalIdlingResources.decrement()
         }
     }
 }

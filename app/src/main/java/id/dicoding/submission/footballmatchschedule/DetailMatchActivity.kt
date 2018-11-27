@@ -17,6 +17,7 @@ import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companio
 import id.dicoding.submission.footballmatchschedule.model.FavoriteMatch.Companion.TABLE_FAVORITE_MATCH
 import id.dicoding.submission.footballmatchschedule.model.Match
 import id.dicoding.submission.footballmatchschedule.presenter.DetailMatchPresenter
+import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.utility.load
 import id.dicoding.submission.footballmatchschedule.utility.parseToIndonesianDate
 import id.dicoding.submission.footballmatchschedule.utility.setInvisible
@@ -48,9 +49,11 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
 
     private fun requestTeamLogo(match: Match) {
         match.idHomeTeam?.let {
+            GlobalIdlingResources.increment()
             mPresenter.getDetailTeamLogo(it, true)
         }
         match.idAwayTeam?.let {
+            GlobalIdlingResources.increment()
             mPresenter.getDetailTeamLogo(it, false)
         }
     }
@@ -68,13 +71,16 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
 
     override fun showHomeTeamLogo(url: String?) {
         detail_home_team_logo_iv.load(url)
+        GlobalIdlingResources.decrement()
     }
 
     override fun showAwayTeamLogo(url: String?) {
         detail_away_team_logo_iv.load(url)
+        GlobalIdlingResources.decrement()
     }
 
     override fun showLoading() {
+        GlobalIdlingResources.increment()
         isLoading = true
         container.setInvisible()
         detail_pb.setVisible()
@@ -84,6 +90,7 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
         isLoading = false
         container.setVisible()
         detail_pb.setInvisible()
+        GlobalIdlingResources.decrement()
     }
 
     override fun updateMatch(data: Match) {
@@ -149,7 +156,7 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
             toggleFavoriteStatus()
             updateFavoriteIcon()
         } catch (e: RuntimeException) {
-            scroll.snackbar(e.localizedMessage).show()
+            detail_match_scroll.snackbar(e.localizedMessage).show()
         } finally {
             return true
         }
@@ -171,9 +178,9 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
                         AWAY_TEAM_SCORE to mMatch.awayScore,
                         MATCH_DATE to mMatch.date)
             }
-            scroll.snackbar(resources.getString(R.string.added_to_favorite)).show()
+            detail_match_scroll.snackbar(resources.getString(R.string.added_to_favorite)).show()
         } catch (e: SQLiteConstraintException) {
-            scroll.snackbar(e.localizedMessage).show()
+            detail_match_scroll.snackbar(e.localizedMessage).show()
         }
     }
 
@@ -186,10 +193,10 @@ class DetailMatchActivity : AppCompatActivity(), DetailMatchView {
                             "(MATCH_ID = {id})",
                             "id" to it)
                 }
-                scroll.snackbar(resources.getString(R.string.remove_from_favorite)).show()
+                detail_match_scroll.snackbar(resources.getString(R.string.remove_from_favorite)).show()
             }
         } catch (e: SQLiteConstraintException) {
-            scroll.snackbar(e.localizedMessage).show()
+            detail_match_scroll.snackbar(e.localizedMessage).show()
         }
     }
 

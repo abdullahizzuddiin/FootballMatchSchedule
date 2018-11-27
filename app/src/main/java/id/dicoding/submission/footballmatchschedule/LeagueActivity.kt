@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import id.dicoding.submission.footballmatchschedule.adapter.LeaguesListAdapter
 import id.dicoding.submission.footballmatchschedule.model.League
 import id.dicoding.submission.footballmatchschedule.presenter.LeaguePresenter
+import id.dicoding.submission.footballmatchschedule.test.GlobalIdlingResources
 import id.dicoding.submission.footballmatchschedule.ui.LeaguesActivityUI
 import id.dicoding.submission.footballmatchschedule.utility.setInvisible
 import id.dicoding.submission.footballmatchschedule.utility.setVisible
@@ -53,6 +54,7 @@ class LeagueActivity : AppCompatActivity(), LeagueView {
     }
 
     override fun showLoading() {
+        GlobalIdlingResources.increment()
         leagueActivityUI.mProgressBar.setVisible()
         leagueActivityUI.mLeaguesListRv.setInvisible()
     }
@@ -60,6 +62,7 @@ class LeagueActivity : AppCompatActivity(), LeagueView {
     override fun hideLoading() {
         leagueActivityUI.mProgressBar.setInvisible()
         leagueActivityUI.mLeaguesListRv.setVisible()
+        GlobalIdlingResources.decrement()
     }
 
     override fun showLeagueList(data: List<League>) {
